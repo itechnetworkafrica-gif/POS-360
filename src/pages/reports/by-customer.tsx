@@ -1,0 +1,86 @@
+import { useListCustomers } from "@/lib/api-client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Search, Star } from "lucide-react";
+import { useState } from "react";
+import { useCurrency } from "@/context/currency";
+
+export default function ReportByCustomer() {
+  const { sym } = useCurrency();
+  const [search, setSearch] = useState("");
+  const { data: customers, isLoading } = useListCustomers({});
+
+  const sorted = [...(customers ?? [])].sort((a, b) => Number(b.totalSpent) - Number(a.totalSpent));
+  const filtered = sorted.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || (c.phone ?? "").includes(search));
+
+  const totalRevenue = sorted.reduce((s, c) => s + Number(c.totalSpent), 0);
+  const totalVisits = sorted.reduce((s, c) => s + c.visitCount, 0);
+  const avgSpend = sorted.length > 0 ? totalRevenue / sorted.length : 0;
+
+  return (
+    <div className="p-4 md:p-6 space-y-6">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Sales by Customer</h1>
+        <p className="text-muted-foreground text-sm mt-1">Customer spending and loyalty metrics</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { label: "Total Customers", value: sorted.length },
+          { label: "Total Revenue", value: `${sym}${totalRevenue.toLocaleString()}` },
+          { label: "Total Visits", value: totalVisits },
+          { label: "Avg Spend/Customer", value: `${sym}${avgSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}` },
+        ].map(kpi => (
+          <Card key={kpi.label}>
+            <CardHeader className="pb-2"><CardTitle className="text-xs text-muted-foreground">{kpi.label}</CardTitle></CardHeader>
+            <CardContent>{isLoading ? <Skeleton className="h-7 w-20" /> : <div className="text-xl font-bold">{kpi.value}</div>}</CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <div className="relative max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search customers..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>#</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead className="hidden sm:table-cell">Phone</TableHead>
+                  <TableHead className="text-right">Visits</TableHead>
+                  <TableHead className="hidden md:table-cell text-right">Loyalty Pts</TableHead>
+                  <TableHead className="text-right">Total Spent</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? Array.from({ length: 8 }).map((_, i) => (
+                  <TableRow key={i}>{Array.from({ length: 5 }).map((_, j) => <TableCell key={j}><Skeleton className="h-4 w-full" /></TableCell>)}</TableRow>
+                )) : filtered.map((c, i) => (
+                  <TableRow key={c.id}>
+                    <TableCell className="text-muted-foreground font-bold text-sm">{i + 1}</TableCell>
+                    <TableCell className="font-medium">{c.name}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-muted-foreground text-sm">{c.phone ?? "—"}</TableCell>
+                    <TableCell className="text-right">{c.visitCount}</TableCell>
+                    <TableCell className="hidden md:table-cell text-right">
+                      <span className="flex items-center justify-end gap-1 text-yellow-600"><Star className="h-3 w-3" />{Number(c.loyaltyPoints).toLocaleString()}</span>
+                    </TableCell>
+                    <TableCell className="text-right font-bold">{sym}{Number(c.totalSpent).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
