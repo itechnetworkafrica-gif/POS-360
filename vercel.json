@@ -1,0 +1,10 @@
+{
+  "installCommand": "pnpm install",
+  "buildCommand": "PORT=3000 BASE_PATH=/ pnpm --filter @workspace/pos360 run build && rm -rf public && cp -r artifacts/pos360/dist/public public",
+  "outputDirectory": "public",
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
