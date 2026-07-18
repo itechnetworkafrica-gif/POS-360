@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
@@ -8,7 +8,7 @@ import { logger } from "./lib/logger";
 const app: Express = express();
 
 // ─── Security headers ────────────────────────────────────────────────────────
-app.use((_req, res, next) => {
+app.use((_req: Request, res: Response, next: NextFunction) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
@@ -18,7 +18,7 @@ app.use((_req, res, next) => {
 
 // ─── Request logging ─────────────────────────────────────────────────────────
 app.use(
-  pinoHttp({
+  (pinoHttp as unknown as typeof pinoHttp)({
     logger,
     serializers: {
       req(req) {
@@ -35,7 +35,7 @@ app.use(
 // In production, restrict to explicitly listed origins via CORS_ORIGIN env var.
 // Multiple origins can be comma-separated: "https://app.example.com,https://www.example.com"
 const rawCorsOrigin = process.env.CORS_ORIGIN;
-const corsOrigin = rawCorsOrigin
+const corsOrigin: string | string[] | boolean = rawCorsOrigin
   ? rawCorsOrigin.split(",").map((o) => o.trim())
   : true; // dev: allow all origins
 
@@ -55,7 +55,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/api", router);
 
 // ─── 404 catch-all ────────────────────────────────────────────────────────────
-app.use((_req, res) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: "Not found" });
 });
 
@@ -63,9 +63,9 @@ app.use((_req, res) => {
 app.use(
   (
     err: Error,
-    _req: express.Request,
-    res: express.Response,
-    _next: express.NextFunction,
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
   ) => {
     logger.error({ err }, "Unhandled error");
     const status = (err as { status?: number }).status ?? 500;
