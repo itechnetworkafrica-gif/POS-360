@@ -6,7 +6,8 @@ node_modules/
 dist/
 build/
 out/
-public/
+# Root-level public/ is Vercel's generated output — exclude it
+/public/
 *.tsbuildinfo
 .cache/
 
