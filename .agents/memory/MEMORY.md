@@ -1,1 +1,2 @@
 - [tsx-pinning-policy](tsx-pinning-policy.md) — pin tsx via workspace overrides when drizzle-kit pulls a freshly-released version blocked by the Replit package firewall
+- [tsx-invocation](tsx-invocation.md) — pnpm exec tsx fails; use absolute pnpm store paths in a node heredoc to run scripts needing workspace-specific deps
