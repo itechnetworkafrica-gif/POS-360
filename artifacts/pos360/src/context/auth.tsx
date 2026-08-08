@@ -60,8 +60,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       credentials: "include",
       body: JSON.stringify({ email, password }),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Login failed");
+    let data: { user?: SessionUser; error?: string } | null = null;
+    try { data = await res.json(); } catch { /* non-JSON response */ }
+    if (!res.ok) throw new Error(data?.error ?? `Login failed (${res.status})`);
+    if (!data?.user) throw new Error("Login failed — unexpected server response");
     setUser(data.user);
   };
 
@@ -72,8 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       credentials: "include",
       body: JSON.stringify(form),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error ?? "Registration failed");
+    let data: { user?: SessionUser; error?: string } | null = null;
+    try { data = await res.json(); } catch { /* non-JSON response */ }
+    if (!res.ok) throw new Error(data?.error ?? `Registration failed (${res.status})`);
+    if (!data?.user) throw new Error("Registration failed — unexpected server response");
     setUser(data.user);
   };
 
