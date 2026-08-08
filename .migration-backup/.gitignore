@@ -1,0 +1,58 @@
+# ── Dependencies ────────────────────────────────────────────────────
+node_modules/
+.pnpm-store/
+
+# ── Build outputs ───────────────────────────────────────────────────
+dist/
+build/
+out/
+# Root-level public/ is Vercel's generated output — exclude it
+/public/
+*.tsbuildinfo
+.cache/
+
+# ── Environment variables (NEVER commit secrets) ────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ── Logs ────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── OS files ────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ── IDE / editor ────────────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ── Replit-specific (not needed outside Replit) ─────────────────────
+.replit
+.replitignore
+.local/
+attached_assets/
+
+# ── Temporary ───────────────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
