@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run typecheck:libs && pnpm --filter @workspace/pos360 run build",
+  "buildCommand": "pnpm run typecheck:libs && pnpm --filter @workspace/pos360 run build && pnpm --filter @workspace/api-server run build",
   "outputDirectory": "artifacts/pos360/dist/public",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": null,
