@@ -9,7 +9,7 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/index.js": {
+    "api/index.mjs": {
       "memory": 512,
       "maxDuration": 30
     }
