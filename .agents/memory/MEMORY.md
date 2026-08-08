@@ -1,0 +1,1 @@
+- [tsx-pinning-policy](tsx-pinning-policy.md) — pin tsx via workspace overrides when drizzle-kit pulls a freshly-released version blocked by the Replit package firewall

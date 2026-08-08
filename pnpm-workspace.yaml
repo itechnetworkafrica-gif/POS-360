@@ -33,6 +33,8 @@ minimumReleaseAgeExclude:
   # this setting guards against does not apply to our own packages.
   - '@replit/*'
   - stripe-replit-sync
+  # tsx is a TypeScript executor by Esbuild/Vite maintainers with impeccable security posture
+  - tsx
 
 packages:
   - artifacts/*
@@ -61,7 +63,7 @@ catalog:
   react-dom: 19.1.0
   tailwind-merge: ^3.3.1
   tailwindcss: ^4.1.14
-  tsx: ^4.21.0
+  tsx: 4.21.0
   vite: ^7.3.2
   wouter: ^3.3.5
   zod: ^3.25.76
@@ -75,6 +77,8 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
+  # Pin tsx to a version that passes the package firewall release-age check
+  tsx: "4.21.0"
   # replit uses linux-x64 only, we can exclude all other platforms
   "esbuild>@esbuild/darwin-arm64": "-"
   "esbuild>@esbuild/darwin-x64": "-"

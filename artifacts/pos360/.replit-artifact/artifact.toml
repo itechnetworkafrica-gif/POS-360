@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "POS360"
+description = "POS360 is a complete point-of-sale platform for retail and restaurant businesses. It handles sales, inventory, employees, customers, reports, and accounting — all in one dashboard. Built by iTech Network Africa."
+version = "1.0.0"
+id = "artifacts/pos360"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18338
+
+[services.development]
+run = "pnpm --filter @workspace/pos360 run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pos360", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/pos360/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18338"
+BASE_PATH = "/"
